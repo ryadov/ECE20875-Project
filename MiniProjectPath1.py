@@ -1,5 +1,7 @@
+import numpy as np
 import pandas
 from sklearn.model_selection import train_test_split
+
 ''' 
 The following is the starting code for path1 for data reading to make your first step easier.
 'dataset_1' is the clean data for path1.
@@ -25,8 +27,24 @@ queensboro = list(getData()["Queensboro Bridge"])
 totalTraffic = list(getData()["Total"])
 precipitation = list(getData()["Precipitation"])
 
+X_train = [brooklyn, manhattan, williamsburg, queensboro]
+X_test = totalTraffic
+
+
+def normalize_train(X_train):
+    mean = np.mean(X_train, axis=0)
+    std = np.std(X_train, axis=0)
+    train = (X_train - mean) / std
+
+    return train, mean, std
+
+
+def normalize_test(X_test, trn_mean, trn_std):
+    test = (X_test - trn_mean) / trn_std
+    return test
+
 # getData()
-print(brooklyn)
-print(manhattan)
-print(williamsburg)
-print(queensboro)
+# print(brooklyn)
+# print(manhattan)
+# print(williamsburg)
+# print(queensboro)
