@@ -27,8 +27,8 @@ queensboro = list(getData()["Queensboro Bridge"])
 totalTraffic = list(getData()["Total"])
 precipitation = list(getData()["Precipitation"])
 
-X_train = [brooklyn, manhattan, williamsburg, queensboro]
-X_test = totalTraffic
+X = np.array([brooklyn, manhattan, williamsburg, queensboro])
+Y = np.array(totalTraffic)
 
 
 def normalize_train(X_train):
@@ -42,6 +42,13 @@ def normalize_train(X_train):
 def normalize_test(X_test, trn_mean, trn_std):
     test = (X_test - trn_mean) / trn_std
     return test
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, Y, test_size=0.2, shuffle=False
+)
+[X_train, trn_mean, trn_std] = normalize_train(X_train)
+X_test = normalize_test(X_test, trn_mean, trn_std)
 
 # getData()
 # print(brooklyn)
