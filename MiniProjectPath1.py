@@ -69,7 +69,17 @@ def main():
     tempLow = list(getData()["Low Temp"])
     tempHigh = list(getData()["High Temp"])
     precipitation = list(getData()["Precipitation"])
-    # print(brooklyn)
+
+    plt.scatter(brooklyn, totalTraffic, label="Brooklyn")
+    plt.scatter(manhattan, totalTraffic, label="Manhattan")
+    plt.scatter(williamsburg, totalTraffic, label="Williamsburg")
+    plt.scatter(queensboro, totalTraffic, label="Queensboro")
+    plt.title('Each Bridge\'s Contribution to the Total Traffic')
+    plt.xlabel('Bridge Traffic')
+    plt.ylabel('Total Traffic')
+    plt.legend(loc="upper left")
+    plt.show()
+
     X = np.array([brooklyn, manhattan, williamsburg, queensboro]).T
     Y = np.array(totalTraffic).T
     X_train, X_test, y_train, y_test = train_test_split(
@@ -90,7 +100,11 @@ def main():
 
     i = np.argmin(MSE)
     [lmda_best, MSE_best, model_best] = [lmbda[i], MSE[i], MODEL[i]]
-
+    plt.plot(lmbda, MSE)
+    plt.title('Mean-Squared Error as a function of $\lambda$')
+    plt.xlabel('$\lambda$')
+    plt.ylabel('MSE')
+    plt.show()
     print(
         "Best lambda tested is "
         + str(lmda_best)
@@ -98,7 +112,9 @@ def main():
         + str(MSE_best)
     )
     print(
-        f"The equation is {model_best.coef_[0]} x1 + {model_best.coef_[1]} x2 + {model_best.coef_[2]} x3 + {model_best.coef_[3]} x4 \n where x1 = brooklyn, x2 = manhattan, x3 = williamsburg and x4 = queensboro")
+        f"The equation is y = {model_best.coef_[0]:.0f}x1 + {model_best.coef_[1]:.0f}x2 + {model_best.coef_[2]:.0f}x3 + {model_best.coef_[3]:.0f}x4 + {model_best.intercept_:.0f}"
+        f"\nwhere x1 = brooklyn, x2 = manhattan, x3 = williamsburg and x4 = queensboro")
+    print(f"The bridge that should NOT have a sensor installed on is Brooklyn, due to having the lowest coefficient, {min(model_best.coef_):.0f}, out of {model_best.coef_.round()}")
     # getData()
     # print(brooklyn)
     # print(manhattan)
@@ -113,15 +129,14 @@ def main():
     for i in degrees:
         # paramFits.append(feature_matrix(data, degrees))
         paramFits.append(least_squares(X2, Y2))
-    X2.sort()
     plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
     plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
     plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
     plt.plot(X2, np.dot(X2, paramFits[3]), color="red", label="d4")
     plt.plot(X2, np.dot(X2, paramFits[4]), color="black", label="d5")
     plt.legend(loc="upper left")
-    plt.show()
-    print(paramFits)
+    # plt.show()
+    # print(paramFits)
 
     return
 
