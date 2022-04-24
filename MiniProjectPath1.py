@@ -165,7 +165,8 @@ def main():
     plt.plot(Xf2, np.array(temp), c='black', label=f'Predicted Traffic')
     plt.legend(loc="upper left")
     plt.show()
-
+    MSE = []
+    ind = 0
     for d in degrees:
         Xtemp = np.array(precipitation)
         Xtemp = Xtemp.T  # horizontal array
@@ -174,12 +175,17 @@ def main():
         Xf = Xf.T  # final X vertical
         beta = least_squares(Xf, Ytemp)  # calculating beta
         Ybar = Xf @ beta
+        MSE.append(((Ytemp - Ybar) ** 2).mean())
+        print(f"For degree = {d}, beta = {beta}")
+        print(f"For degree = {d}, MSE = {MSE[ind]} ")
+
         temp = []
         for y in Ybar:
             temp.append(y)
         temp.sort()
         plt.plot(Xf2, np.array(temp), label=f'd = {d}')
         paramFits.append(beta)
+        ind += 1
     plt.scatter(precipitation, Ytemp, label="Precipitation Traffic")
     plt.title('Precipitation Measurements against Total Traffic')
     plt.xlabel('Precipitation')
@@ -188,6 +194,7 @@ def main():
     plt.legend(loc="upper left")
     plt.show()
     corr, _ = pearsonr(precipitation, totalTraffic)
+    print(f"The best model is with degree {MSE.index(min(MSE))} with an MSE of {min(MSE)}")
     # Correlation = cov(precipitation, totalTraffic)/(np.std(precipitation) * np.std(totalTraffic))
     print(f"Correlation of Precipitation to Total Traffic is {corr:.3f}, which indicates a strong negative correlation.")
     return
