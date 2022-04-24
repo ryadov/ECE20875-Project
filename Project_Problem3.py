@@ -1,5 +1,7 @@
 import math
 import numpy as np
+import seaborn as sns
+import statsmodels
 import pandas as pd
 from scipy.special import expit
 from sklearn.model_selection import train_test_split
@@ -34,12 +36,13 @@ def main():
     X_test = np.array(X_test).reshape(-1, 1)
     model.fit(X_train, y_train)
     # print(model.predict_proba(X_test))
-    # print(model.score(X_test, y_test))
+    print(model.score(X_test, y_test))
     # plt.scatter(X_train, y_train, marker='o', color="black")
     x_cont = np.array(np.linspace(min(totalTraffic),max(totalTraffic), 1000)).reshape(-1, 1)
     print(model.intercept_)
     sig = sigmoid(sorted(x_cont) * model.coef_ + model.intercept_)
-    plt.scatter(x_cont, sig, color="red", linewidth=3)
+    # plt.scatter(x_cont, sig, color="red", linewidth=3)
+    sns.regplot(x=totalTraffic, y=raining, logistic=True, ci=None)
     plt.show()
 
 
