@@ -82,9 +82,7 @@ def main():
 
     X = np.array([brooklyn, manhattan, williamsburg, queensboro]).T
     Y = np.array(totalTraffic).T
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, Y, test_size=0.2, shuffle=False
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, shuffle=False)
     [X_train, trn_mean, trn_std] = normalize_train(X_train)
     X_test = normalize_test(X_test, trn_mean, trn_std)
     lmbda = get_lambda_range()
@@ -122,24 +120,78 @@ def main():
     # print(queensboro)
     ####################PART TWO STARTS HERE#####################
 
-    X2 = np.array([tempHigh, tempLow, precipitation]).T
-    Y2 = totalTraffic
-    degrees = [1, 2, 3, 4, 5]
-    paramFits = []
-    for i in degrees:
-        # paramFits.append(feature_matrix(data, degrees))
-        paramFits.append(least_squares(X2, Y2))
-    plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
-    plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
-    plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
-    plt.plot(X2, np.dot(X2, paramFits[3]), color="red", label="d4")
-    plt.plot(X2, np.dot(X2, paramFits[4]), color="black", label="d5")
+    # X2 = np.array([tempHigh, tempLow, precipitation]).T
+    # Y2 = totalTraffic
+    plt.scatter(tempHigh, totalTraffic, label="Temperature High")
+    plt.scatter(tempLow, totalTraffic, label="Temperature Low")
+    plt.title('Temperature Measurements against Total Traffic')
+    plt.xlabel('Temperature')
+    plt.ylabel('Total Traffic')
     plt.legend(loc="upper left")
+    plt.show()
+
+    plt.scatter(precipitation, totalTraffic, label="Precipitation")
+    plt.title('Precipitation Measurements against Total Traffic')
+    plt.xlabel('Precipitation')
+    plt.ylabel('Total Traffic')
+    plt.legend(loc="upper left")
+    plt.show()
+
+    # degrees = [1, 2, 3, 4, 5]
+    # paramFits = []
+    # for i in degrees:
+    #     paramFits.append(feature_matrix(data, i))
+        # paramFits.append(least_squares(X2, Y2))
+    Xtemp = (np.array(tempLow) + np.array(tempHigh))/2
+    Xtemp = Xtemp.T  # horizontal array
+    # Xf = Xtemp[0]  # horizontal array one-dimensional
+    Xf2 = np.sort(Xtemp)
+    Xf = feature_matrix(Xtemp, 2)
+    Xf = Xf.T  # final X vertical
+
+    Ytemp = np.array(totalTraffic).T
+    beta = least_squares(Xf, Y)  # calculating beta
+    Ybar = Xf @ beta
+    temp = []
+    for y in Ybar:
+        temp.append(y)
+    temp.sort()
+    plt.scatter(tempHigh, totalTraffic, label="Temperature High Traffic")
+    plt.scatter(tempLow, totalTraffic, label="Temperature Low Traffic")
+    plt.title('Temperature Measurements against Total Traffic')
+    plt.xlabel('Temperature')
+    plt.ylabel('Total Traffic')
+    plt.plot(Xf2, np.array(temp), c='black', label=f'Predicted Traffic')
+    plt.legend(loc="upper left")
+    plt.show()
+
+
+    # plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
+    # plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
+    # plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
+    # plt.plot(X2, np.dot(X2, paramFits[3]), color="red", label="d4")
+    # plt.plot(X2, np.dot(X2, paramFits[4]), color="black", label="d5")
+    # plt.legend(loc="upper left")
     # plt.show()
     # print(paramFits)
 
     return
 
+def feature_matrix(x, d):
+    # fill in
+    # There are several ways to write this function. The most efficient would be a nested list comprehension
+    # which for each sample in x calculates x^d, x^(d-1), ..., x^0.
+    power = 2
+    X = x.copy()
+    while power <= d:
+        temp = np.array([i ** power for i in x])
+        X = np.vstack((temp, X))
+        power += 1
+    xlen = len(x)  # length of array
+    Ones = xlen * [1]  # xlen ones in horizontal list
+    OnesArr = np.array(Ones)  # ones in horizontal array
+    X = np.vstack((X, OnesArr))  # appending ones as the last row
+    return X
 
 if __name__ == "__main__":
     main()
