@@ -137,8 +137,8 @@ def main():
     plt.legend(loc="upper left")
     plt.show()
 
-    # degrees = [1, 2, 3, 4, 5]
-    # paramFits = []
+    degrees = [1, 2, 3, 4, 5]
+    paramFits = []
     # for i in degrees:
     #     paramFits.append(feature_matrix(data, i))
         # paramFits.append(least_squares(X2, Y2))
@@ -165,7 +165,27 @@ def main():
     plt.legend(loc="upper left")
     plt.show()
 
-
+    for d in degrees:
+        Xtemp = np.array(precipitation)
+        Xtemp = Xtemp.T  # horizontal array
+        Xf2 = np.sort(Xtemp)
+        Xf = feature_matrix(Xtemp, d)
+        Xf = Xf.T  # final X vertical
+        beta = least_squares(Xf, Ytemp)  # calculating beta
+        Ybar = Xf @ beta
+        temp = []
+        for y in Ybar:
+            temp.append(y)
+        temp.sort()
+        plt.plot(Xf2, np.array(temp), label=f'd = {d}')
+        paramFits.append(beta)
+    plt.scatter(precipitation, Ytemp, label="Precipitation Traffic")
+    plt.title('Precipitation Measurements against Total Traffic')
+    plt.xlabel('Precipitation')
+    plt.ylabel('Total Traffic')
+    plt.plot(Xf2, np.array(temp), c='black', label=f'Predicted Traffic')
+    plt.legend(loc="upper left")
+    plt.show()
     # plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
     # plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
     # plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
