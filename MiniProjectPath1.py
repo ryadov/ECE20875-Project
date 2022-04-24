@@ -113,7 +113,7 @@ def main():
     for i in degrees:
         # paramFits.append(feature_matrix(data, degrees))
         paramFits.append(least_squares(X2, Y2))
-
+    X2.sort()
     plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
     plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
     plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
