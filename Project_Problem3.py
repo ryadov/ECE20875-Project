@@ -26,7 +26,7 @@ def main():
     precipitation_threshold = 0.098
     testing_size = 0.2
     raining = [1 if p > precipitation_threshold else 0 for p in precipitation]
-    plt.scatter(totalTraffic, raining, marker='D', c='blue')
+    plt.scatter(totalTraffic, raining, marker='D', c='blue', label= 'Raining State')
     # plt.show()    #uncomment to view plot of precipitation against number of bicyclist
 
 
@@ -36,13 +36,17 @@ def main():
     X_test = np.array(X_test).reshape(-1, 1)
     model.fit(X_train, y_train)
     # print(model.predict_proba(X_test))
-    print(model.score(X_test, y_test))
+    print(f"The score of this model is {model.score(X_test, y_test):.3f}")
     # plt.scatter(X_train, y_train, marker='o', color="black")
     x_cont = np.array(np.linspace(min(totalTraffic),max(totalTraffic), 1000)).reshape(-1, 1)
-    print(model.intercept_)
+    # print(model.intercept_)
     sig = sigmoid(sorted(x_cont) * model.coef_ + model.intercept_)
     # plt.scatter(x_cont, sig, color="red", linewidth=3)
-    sns.regplot(x=totalTraffic, y=raining, logistic=True, ci=None)
+    sns.regplot(x=totalTraffic, y=raining, logistic=True, ci=None, label='Probability of Rain')
+    plt.title('Raining Prediction against Total Traffic')
+    plt.xlabel('Total Traffic')
+    plt.ylabel('Raining Or Not Raining')
+    plt.legend(loc="center right")
     plt.show()
 
 
