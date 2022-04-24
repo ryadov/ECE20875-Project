@@ -1,4 +1,5 @@
-
+from numpy import cov
+from scipy.stats import pearsonr
 import numpy as np
 import pandas
 from matplotlib import pyplot as plt
@@ -168,7 +169,7 @@ def main():
     for d in degrees:
         Xtemp = np.array(precipitation)
         Xtemp = Xtemp.T  # horizontal array
-        Xf2 = np.sort(Xtemp)
+        Xf2 = np.sort(Xtemp)[::-1]
         Xf = feature_matrix(Xtemp, d)
         Xf = Xf.T  # final X vertical
         beta = least_squares(Xf, Ytemp)  # calculating beta
@@ -186,15 +187,9 @@ def main():
     plt.plot(Xf2, np.array(temp), c='black', label=f'Predicted Traffic')
     plt.legend(loc="upper left")
     plt.show()
-    # plt.plot(X2, np.dot(X2, paramFits[0]), color="red", label="d1")
-    # plt.plot(X2, np.dot(X2, paramFits[1]), color="purple", label="d2")
-    # plt.plot(X2, np.dot(X2, paramFits[2]), color="blue", label="d3")
-    # plt.plot(X2, np.dot(X2, paramFits[3]), color="red", label="d4")
-    # plt.plot(X2, np.dot(X2, paramFits[4]), color="black", label="d5")
-    # plt.legend(loc="upper left")
-    # plt.show()
-    # print(paramFits)
-
+    corr, _ = pearsonr(precipitation, totalTraffic)
+    # Correlation = cov(precipitation, totalTraffic)/(np.std(precipitation) * np.std(totalTraffic))
+    print(f"Correlation of Precipitation to Total Traffic is {corr:.3f}, which indicates a strong negative correlation.")
     return
 
 def feature_matrix(x, d):
